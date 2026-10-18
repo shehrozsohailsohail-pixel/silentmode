@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.smartsilent.scheduler"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.smartsilent.scheduler"
@@ -19,7 +19,7 @@ android {
         // Section 59: verified Play policy as of Sept 2026 - new submissions
         // require 36; not required for a direct sideload install, but wrong
         // to leave unset in a "production" spec.
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 4
         versionName = "0.4.0-increment4"
 
