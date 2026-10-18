@@ -1,14 +1,5 @@
 name: Build debug APK
 
-# Framework v7.0 Section 72: this sandbox has no Android SDK and no network
-# path to Google's Maven repo or the Android SDK/Gradle distribution servers
-# (verified directly, not assumed - see the project README). GitHub's own
-# runners have neither restriction, so this workflow is what actually turns
-# the project into an installed app. No gradle-wrapper.jar is committed to
-# this repo (one could not be produced correctly without a working Gradle
-# install), so the "Provision Gradle" step below generates a real one fresh,
-# on this runner, before anything else runs.
-
 on:
   push:
     branches: [ main, master ]
@@ -26,15 +17,16 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-    - name: Provision Gradle
+      - name: Provision Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.6'
 
-     - name: Generate Gradle wrapper
+      - name: Generate Gradle wrapper
         run: |
           gradle wrapper --gradle-version 9.6
           chmod +x gradlew
+
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace
 
