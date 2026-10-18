@@ -20,11 +20,11 @@ jobs:
       - name: Provision Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '9.6'
+          gradle-version: '8.10'
 
       - name: Generate Gradle wrapper
         run: |
-          gradle wrapper --gradle-version 9.6
+          gradle wrapper --gradle-version 8.10
           chmod +x gradlew
 
       - name: Build debug APK
