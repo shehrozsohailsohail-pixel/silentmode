@@ -12,13 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.smartsilent.scheduler"
-        // Section 58: raised from the original 21 - Hilt's own floor is now
-        // 23, and the runtime permission model Section 26 assumes starts
-        // at 23 too.
         minSdk = 23
-        // Section 59: verified Play policy as of Sept 2026 - new submissions
-        // require 36; not required for a direct sideload install, but wrong
-        // to leave unset in a "production" spec.
         targetSdk = 37
         versionCode = 4
         versionName = "0.4.0-increment4"
@@ -58,9 +52,6 @@ android {
 }
 
 ksp {
-    // Room schema history, for writing real migrations from Increment 2
-    // onward - Section 32/58. Not required at schema version 1, but cheap
-    // to have from day one so no history is lost later.
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
@@ -79,8 +70,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.4.0")
 
-    // Framework v7.0 Section 42 / security/SecureStorage.kt - stable as of
-    // security-crypto 1.1.0.
     implementation("androidx.security:security-crypto-ktx:1.1.0")
 
     implementation("androidx.room:room-runtime:2.7.0")
