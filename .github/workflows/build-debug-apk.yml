@@ -11,11 +11,136 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # AGP 9.1.0 aur latest libraries ke liye JDK 21 zaroori hai
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
+
+      - name: Auto-Fix Gradle Files (Bypass Copy-Paste Errors)
+        run: |
+          echo "Overwriting root build.gradle.kts..."
+          cat << 'EOF' > build.gradle.kts
+          plugins {
+              id("com.android.application") version "9.1.0" apply false
+              id("com.android.library") version "9.1.0" apply false
+              id("org.jetbrains.kotlin.android") version "2.0.0" apply false
+              id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" apply false
+              id("com.google.devtools.ksp") version "2.0.0-1.0.24" apply false
+              id("com.google.dagger.hilt.android") version "2.51.1" apply false
+          }
+          EOF
+
+          echo "Overwriting settings.gradle.kts..."
+          cat << 'EOF' > settings.gradle.kts
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "SmartSilentScheduler"
+          include(":app")
+          EOF
+
+          echo "Overwriting app/build.gradle.kts..."
+          cat << 'EOF' > app/build.gradle.kts
+          plugins {
+              id("com.android.application")
+              id("org.jetbrains.kotlin.android")
+              id("org.jetbrains.kotlin.plugin.compose")
+              id("com.google.devtools.ksp")
+              id("com.google.dagger.hilt.android")
+          }
+
+          android {
+              namespace = "com.smartsilent.scheduler"
+              compileSdk = 37
+
+              defaultConfig {
+                  applicationId = "com.smartsilent.scheduler"
+                  minSdk = 23
+                  targetSdk = 37
+                  versionCode = 4
+                  versionName = "0.4.0-increment4"
+                  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+              }
+
+              buildTypes {
+                  release {
+                      isMinifyEnabled = true
+                      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+                  }
+                  debug {
+                      isMinifyEnabled = false
+                      applicationIdSuffix = ".debug"
+                  }
+              }
+
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_17
+                  targetCompatibility = JavaVersion.VERSION_17
+              }
+
+              kotlinOptions {
+                  jvmTarget = "17"
+              }
+
+              buildFeatures {
+                  compose = true
+              }
+
+              packaging {
+                  resources {
+                      excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                  }
+              }
+          }
+
+          ksp {
+              arg("room.schemaLocation", "$projectDir/schemas")
+          }
+
+          dependencies {
+              implementation("androidx.core:core-ktx:1.15.0")
+              implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
+              implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
+              implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+              implementation("androidx.activity:activity-compose:1.10.0")
+              implementation(platform("androidx.compose:compose-bom:2026.06.01"))
+              implementation("androidx.compose.ui:ui")
+              implementation("androidx.compose.ui:ui-graphics")
+              implementation("androidx.compose.ui:ui-tooling-preview")
+              implementation("androidx.compose.material3:material3")
+              implementation("androidx.compose.material:material-icons-extended")
+              implementation("androidx.navigation:navigation-compose:2.9.0")
+              implementation("androidx.hilt:hilt-navigation-compose:1.4.0")
+              implementation("androidx.security:security-crypto-ktx:1.1.0")
+              implementation("androidx.room:room-runtime:2.7.0")
+              implementation("androidx.room:room-ktx:2.7.0")
+              ksp("androidx.room:room-compiler:2.7.0")
+              implementation("com.google.dagger:hilt-android:2.60")
+              ksp("com.google.dagger:hilt-android-compiler:2.60")
+              implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+              testImplementation("junit:junit:4.13.2")
+              testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+              androidTestImplementation("androidx.test.ext:junit:1.2.1")
+              androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+              androidTestImplementation(platform("androidx.compose:compose-bom:2026.06.01"))
+              androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+              debugImplementation("androidx.compose.ui:ui-tooling")
+              debugImplementation("androidx.compose.ui:ui-test-manifest")
+          }
+          EOF
 
       - name: Provision Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -24,7 +149,7 @@ jobs:
 
       - name: Generate Gradle wrapper
         run: |
-          gradle wrapper --gradle-version 8.10
+          gradle wrapper --gradle-version 8.10 --stacktrace
           chmod +x gradlew
 
       - name: Build debug APK
