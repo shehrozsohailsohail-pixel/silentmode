@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- updatePeriodMillis is a *floor*, not a guarantee - the OS may delay it
+     under Doze/App Standby. The widget's real freshness comes from
+     WidgetUpdater being called after every reconciliation, not from this
+     value; it exists only as a backstop for whenever the app hasn't run
+     reconciliation in a while (e.g., automation disabled). -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="110dp"
+    android:minHeight="40dp"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/widget_smartsilent"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen" />

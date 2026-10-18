@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Framework v7.0 Section 64, updated for this increment's actual admin-auth
+     storage: the password hash/salt live in an EncryptedSharedPreferences
+     file (security/SecureStorage.kt, SECURE_PREFS_FILE_NAME =
+     "smartsilent_secure_prefs"), not a database table, so the exclusion here
+     is a sharedpref-domain exclusion rather than the database-table
+     placeholder Increment 1 shipped before that feature existed. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" path="smartsilent_secure_prefs.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="smartsilent_secure_prefs.xml" />
+    </device-transfer>
+</data-extraction-rules>

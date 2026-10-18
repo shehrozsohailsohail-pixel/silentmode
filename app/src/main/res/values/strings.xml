@@ -1,0 +1,6 @@
+<resources>
+    <!-- Placeholder - app display name is an open decision, framework v7.0
+         Section 70. Change freely; nothing in the code depends on this
+         exact string. -->
+    <string name="app_name">SmartSilent Scheduler</string>
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <!-- All real theming happens in Kotlin via Compose's MaterialTheme; this
+         XML theme only covers the window before Compose content is set. -->
+    <style name="Theme.SmartSilentScheduler" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
